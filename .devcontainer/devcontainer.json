@@ -1,33 +1,70 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/images/blob/main/src/universal/README.md
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "hostRequirements": {
-    "cpus": 2
-  },
-  "waitFor": "onCreateCommand",
-  "onCreateCommand": "./.devcontainer/setup.sh",
-  "updateContentCommand": "",
-  "postCreateCommand": "",
-  "remoteEnv": {
-    "EDITOR": "nvim",
-    "DOTFILES": "${containerWorkspaceFolder}"
-  },
-  "customizations": {
-    "codespaces": {
-      "openFiles": []
+  "name": "Workspace",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  // info about this base image:
+  //   https://github.com/devcontainers/images/blob/main/src/base-debian/.devcontainer/devcontainer.json
+  "image": "mcr.microsoft.com/devcontainers/universal:2-focal",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
     },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
+      "jqVersion": "latest",
+      "yqVersion": "4",
+      "xqVersion": "latest"
+    },
+    "ghcr.io/jungaretti/features/make:1": {},
+    "ghcr.io/guiyomh/features/just:0": {},
+    "ghcr.io/lukewiwa/features/shellcheck:0": {}
+    // "ghcr.io/devcontainers/features/python:1": {
+    //   "version": "3.12"
+    // },
+  },
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
     "vscode": {
-      "extensions": [],
       "settings": {
-        "editor.minimap.enabled": false,
-        "breadcrumbs.enabled": false,
-        "workbench.activityBar.visible": false,
-        "workbench.statusBar.visible": false,
-        "explorer.openEditors.visible": 0,
-        "extensions.ignoreRecommendations": true,
-        "workbench.editor.untitled.hint": "hidden",
-        "terminal.integrated.fontSize": 14,
-        "terminal.integrated.defaultLocation": "editor"
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.defaultProfile.osx": "zsh",
+        "terminal.integrated.defaultProfile.windows": "zsh"
+      },
+      "extensions": [
+        // bash
+        "mads-hartmann.bash-ide-vscode", // bash ide
+        // editor styling
+        "vscode-icons-team.vscode-icons", // better vs code icons
+        "will-stone.plastic", // my fav theme
+        // ide extensions
+        "EditorConfig.EditorConfig", // editorconfig support
+        "eamodio.gitlens", // git++
+        "codezombiech.gitignore", // gitignore assistant
+        "redhat.vscode-yaml", // yaml support
+        "streetsidesoftware.code-spell-checker", // spell checks
+        "wayou.vscode-todo-highlight" // to-do highlighting
+      ]
+    },
+    "codespaces": {
+      "repositories": {
+        "marweumr/*": {
+          "permissions": {
+            "actions": "write",
+            "contents": "write"
+          }
+        }
       }
     }
-  }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "rustc --version",
+  // NOTE: gh cli is installed by the 'features' property above.
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y fd-find ripgrep zip unzip fuse libfuse2 mosh ; sudo chsh -s /usr/bin/zsh codespace"
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
 }
